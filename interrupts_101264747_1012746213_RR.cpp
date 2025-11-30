@@ -5,7 +5,7 @@
  * 
  */
 
-#include "interrupts_101264747_.hpp"
+#include "interrupts_101264747_1012746213.hpp"
 
 // Helper: pick highest-priority READY process (lower priority value = higher)
 static void dispatch_highest_priority(
@@ -63,7 +63,6 @@ std::tuple<std::string> run_simulation(std::vector<PCB> list_processes) {
 
                 bool loaded = assign_memory(process);
                 if (!loaded) {
-                    // For simplicity, skip if no memory; could retry later.
                     continue;
                 }
 
@@ -91,7 +90,6 @@ std::tuple<std::string> run_simulation(std::vector<PCB> list_processes) {
             it->io_remaining--;
 
             if (it->io_remaining == 0) {
-                // WAITING -> READY
                 states old_state = WAITING;
                 it->state = READY;
                 it->time_since_last_io = 0;
