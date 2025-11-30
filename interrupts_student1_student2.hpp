@@ -61,6 +61,10 @@ struct PCB{
     int             start_time;
     unsigned int    processing_time;
     unsigned int    remaining_time;
+    unsigned int    time_since_last_io;
+    unsigned int    io_remaining;
+    unsigned int    priority;
+    unsigned int    available_time;
     int             partition_number;
     enum states     state;
     unsigned int    io_freq;
@@ -173,8 +177,6 @@ std::string print_exec_header() {
 
 std::string print_exec_status(unsigned int current_time, int PID, states old_state, states new_state) {
 
-    const int tableWidth = 49;
-
     std::stringstream buffer;
 
     buffer  << "|"
@@ -264,6 +266,10 @@ PCB add_process(std::vector<std::string> tokens) {
     process.arrival_time = std::stoi(tokens[2]);
     process.processing_time = std::stoi(tokens[3]);
     process.remaining_time = std::stoi(tokens[3]);
+    process.time_since_last_io = 0;
+    process.io_remaining = 0;
+    process.priority = static_cast<unsigned int>(process.PID);
+    process.available_time = process.arrival_time;
     process.io_freq = std::stoi(tokens[4]);
     process.io_duration = std::stoi(tokens[5]);
     process.start_time = -1;
@@ -309,6 +315,10 @@ void idle_CPU(PCB &running) {
     running.arrival_time = 0;
     running.io_duration = 0;
     running.io_freq = 0;
+    running.time_since_last_io = 0;
+    running.io_remaining = 0;
+    running.priority = UINT_MAX;
+    running.available_time = UINT_MAX;
     running.partition_number = 0;
     running.size = 0;
     running.state = NOT_ASSIGNED;
