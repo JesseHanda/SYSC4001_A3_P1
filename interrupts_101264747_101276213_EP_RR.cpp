@@ -1,6 +1,6 @@
 /**
  * @file interrupts_101264747_101276213_EP_RR.cpp
- * @author Sasisekhar Govind
+ * @author Jesse Handa
  * @brief template main.cpp file for Assignment 3 Part 1 of SYSC4001
  *
  */
