@@ -260,18 +260,35 @@ bool free_memory(PCB &program){
 
 //Convert a list of strings into a PCB
 PCB add_process(std::vector<std::string> tokens) {
+    // Allow both comma-separated and space-separated lines; also allow an
+    // optional priority field (position 6) defaulting to PID.
+    std::vector<std::string> fields;
+    if (tokens.size() == 1) {
+        std::istringstream ss(tokens[0]);
+        std::string f;
+        while (ss >> f) fields.push_back(f);
+    } else {
+        fields = tokens;
+    }
+
+    if (fields.size() < 6) {
+        throw std::runtime_error("Invalid process line: not enough fields");
+    }
+
     PCB process;
-    process.PID = std::stoi(tokens[0]);
-    process.size = std::stoi(tokens[1]);
-    process.arrival_time = std::stoi(tokens[2]);
-    process.processing_time = std::stoi(tokens[3]);
-    process.remaining_time = std::stoi(tokens[3]);
+    process.PID = std::stoi(fields[0]);
+    process.size = std::stoi(fields[1]);
+    process.arrival_time = std::stoi(fields[2]);
+    process.processing_time = std::stoi(fields[3]);
+    process.remaining_time = std::stoi(fields[3]);
     process.time_since_last_io = 0;
     process.io_remaining = 0;
-    process.priority = static_cast<unsigned int>(process.PID);
+    // priority defaults to PID if not provided
+    process.priority = (fields.size() >= 7) ? static_cast<unsigned int>(std::stoi(fields[6]))
+                                            : static_cast<unsigned int>(process.PID);
     process.available_time = process.arrival_time;
-    process.io_freq = std::stoi(tokens[4]);
-    process.io_duration = std::stoi(tokens[5]);
+    process.io_freq = std::stoi(fields[4]);
+    process.io_duration = std::stoi(fields[5]);
     process.start_time = -1;
     process.partition_number = -1;
     process.state = NOT_ASSIGNED;
@@ -280,7 +297,7 @@ PCB add_process(std::vector<std::string> tokens) {
 }
 
 //Returns true if all processes in the queue have terminated
-bool all_process_term(std::vector<PCB> processes) {
+bool all_process_terminated(std::vector<PCB> processes) {
 
     for(auto process : processes) {
         if(process.state != TERMINATED) {
