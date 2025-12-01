@@ -280,7 +280,7 @@ PCB add_process(std::vector<std::string> tokens) {
 }
 
 //Returns true if all processes in the queue have terminated
-bool all_process_terminated(std::vector<PCB> processes) {
+bool all_process_term(std::vector<PCB> processes) {
 
     for(auto process : processes) {
         if(process.state != TERMINATED) {

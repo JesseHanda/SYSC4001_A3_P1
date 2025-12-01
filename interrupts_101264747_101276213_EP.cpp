@@ -53,7 +53,7 @@ std::tuple<std::string> run_simulation(std::vector<PCB> list_processes) {
 
     std::string execution_status = print_exec_header();
 
-    while (!all_process_terminated(job_list) || job_list.empty()) {
+    while (!all_process_term(job_list) || job_list.empty()) {
 
         // --------------------------------------------------
         // (1) ARRIVALS
